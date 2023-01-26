@@ -1,3 +1,4 @@
+# IF A STRING IS ENTERED IN THE s_hours INPUT, THE SCRIPT WILL FAIL
 def available():
     from datetime import timedelta as tdelta
     import datetime as dt
