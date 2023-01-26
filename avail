@@ -7,65 +7,78 @@ def available():
     import os 
 
     try:
+        try:
+            import pyautogui
+        except ModuleNotFoundError:
+            subprocess.call('pip install pyautogui')
+            print('\nModule installed\n')
+
         import pyautogui
-    except ModuleNotFoundError:
-        subprocess.call('pip install pyautogui')
-        print('\nModule installed\n')
 
-    import pyautogui
+        break_s = "12:00:00"
+        break_e = "12:30:00"
 
-    break_s = "12:00:00"
-    break_e = "12:30:00"
+        s_hours = float(input("Enter the number of hours the script will run:\n"))
+        s_hours = math.ceil(s_hours)
 
-    hours = float(input("Enter the number of hours the script will run:\n"))
-    hours = math.ceil(hours)
-    tcheck = dt.datetime.now()
-    tcheck = tcheck + tdelta(hours=hours)
-    tcheckf = tcheck.strftime("%H:%M:%S")
+        tcheck = dt.datetime.now()
+        tcheck_o = tcheck.strftime("%H:%M:%S")
+        tcheck = tcheck + tdelta(hours=s_hours)
+        tcheckf = tcheck.strftime("%H:%M:%S")
 
-    pause = 240
-    lunch = 1800
+        pause = 240
+        lunch = 1800
 
-    minutes = hours * 60
-    seconds = minutes * 60
-    if tcheckf >= break_e:
-        iterations = (seconds - lunch) / pause
-    else:
-        iterations = seconds / pause
-    iterations = math.ceil(iterations)
+        minutes = s_hours * 60
+        seconds = minutes * 60
 
-    os.system('cls')
-
-    pyautogui.FAILSAFE = True
-
-    print(f"Number of iterations: {iterations}")    
-    print('\nStart\n')
-
-    for i in range(1, iterations + 1):
-        now = dt.datetime.now()
-        timer = now.strftime("%H:%M:%S")
-
-        if timer >= break_s and timer <= break_e:
-            print("\nGoing on break\n")
-            time.sleep(lunch)
-            print("Resuming...\n")
-            time.sleep(1)
+        if tcheck_o >= break_e:
+            iterations = seconds / pause
         else:
-            print(f"Iteration: {i}\t{timer}")
-            print('\tMove')
-
-            for i in range(0,100):
-                pyautogui.moveTo(500, i * 5)
+            if tcheckf >= break_e:
+                iterations = (seconds - lunch) / pause
+            else:
+                iterations = seconds / pause
                 
-            print('\tRest\n')
+        iterations = math.ceil(iterations)
 
-            for i in range(0,3):
-                pyautogui.press('shift')
+        os.system('cls')
 
-            time.sleep(pause)
+        pyautogui.FAILSAFE = True
 
-    print('Done')
+        print(f"Number of iterations: {iterations}")    
+        print('\nStart\n')
 
-    input("\nPress 'Enter' to close the script\n")
+        for i in range(1, iterations + 1):
+            now = dt.datetime.now()
+            timer = now.strftime("%H:%M:%S")
+
+            if timer >= break_s and timer <= break_e:
+                print("\nGoing on break\n")
+                time.sleep(lunch)
+                print("Resuming...\n")
+                time.sleep(1)
+            else:
+                print(f"Iteration: {i}\t{timer}")
+                print('\tMove')
+
+                for i in range(0,100):
+                    pyautogui.moveTo(500, i * 5)
+                    
+                print('\tRest\n')
+
+                for i in range(0,3):
+                    pyautogui.press('shift')
+
+                time.sleep(pause)
+
+        print('Done')
+
+        input("\nPress 'Enter' to close the script\n")
+
+    except pyautogui.FailSafeException:
+        print("\nScript has been aborted due to FailSafe trigger")
+        time.sleep(1)
+        input("\nPress 'Enter' to close the script\n")
 
 available()
