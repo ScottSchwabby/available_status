@@ -64,7 +64,7 @@ def available():
             timer = now.strftime("%H:%M:%S")
             
             if timer >= end:
-                print(f"It is now past 5PM, the script will now end.\t{timer}")
+                print(f"It is now past 5PM, the script will now end.\t{timer}\n")
                 time.sleep(2)
                 break
 
