@@ -1,12 +1,12 @@
+from datetime import timedelta as tdelta
+import datetime as dt
+import importlib as implib
+import math
+import subprocess
+import time
+import os
+    
 def available():
-    from datetime import timedelta as tdelta
-    import datetime as dt
-    import importlib as implib
-    import math
-    import subprocess
-    import time
-    import os
-
     try:
         implib.import_module("pyautogui")
         print("pyautogui is already installed\n")
