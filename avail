@@ -17,7 +17,6 @@ def available():
     import pyautogui
     
     try:
-
         while True:
             s_hours = input("Enter the number of hours the script will run:\n")
             try:
