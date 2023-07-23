@@ -1,94 +1,101 @@
-def available():
-    from datetime import timedelta as tdelta
-    import datetime as dt
-    import importlib as implib
-    import math
-    import subprocess
-    import time
-    import os
-    
-    try:
-        implib.import_module("pyautogui")
-        print("pyautogui is already installed\n")
-    except ModuleNotFoundError:
-        subprocess.call('pip install pyautogui')
-        print('\nModule installed\n')
+from datetime import timedelta as tdelta
+import datetime as dt
+import importlib as implib
+import math
+import subprocess
+import time
+import os
 
-    import pyautogui
-    
+try:
+    implib.import_module("pyautogui")
+    print("pyautogui is already installed\n")
+except ModuleNotFoundError:
+    subprocess.call('pip install pyautogui')
+    print('\nModule installed\n')
+
+import pyautogui
+
+def timer_countdown(duration:int):
+    while duration:
+        mins,secs = divmod(duration,60)
+        timer_c = f"{format(mins,'02')}:{format(secs,'02')}"
+        print(timer_c,end='\r')
+        duration -= 1
+        time.sleep(1)
+
+def available():
     try:
         while True:
-            s_hours = input("Enter the number of hours the script will run:\n")
+            u_hours = input("Enter the number of hours the script will run:\n")
             try:
-                s_hours = float(s_hours)
+                u_hours = float(u_hours)
                 break
             except ValueError:
                 print("Invalid input, enter a number.\n")
                 time.sleep(1)
 
-        s_hours = math.ceil(s_hours)
-        break_s = "12:00:00"
-        break_e = "12:30:00"
+        while True:
+            u_minutes = input("Enter the number of minutes the script will run:\n")
+            try:
+                u_minutes = int(u_minutes)
+                break
+            except ValueError:
+                print("Invalid input, enter a number (without a decimal).\n")
+                time.sleep(1)
+
+        u_hours = math.floor(u_hours)
         end = "17:00:00"
         tcheck = dt.datetime.now()
-        tcheck_o = tcheck.strftime("%H:%M:%S")
-        tcheck = tcheck + tdelta(hours=s_hours)
+        tcheck = tcheck + tdelta(hours=u_hours)
+        tcheck = tcheck + tdelta(minutes=u_minutes)
         tcheckf = tcheck.strftime("%H:%M:%S")
 
-        pause = 240
-        lunch = 1800
+        if tcheckf > end:
+            while True:
+                u_cont = input(f"\nDo you want the script to end at 5:00 PM (Y/N)?\nIf 'N' the script will continue for the specified duration: ({format(math.floor(u_hours),'02')}:{format(u_minutes,'02')}):\n").upper()
+                if u_cont == 'Y' or u_cont == 'N':
+                    break
+                else:
+                    print("Invalid input. Please try again.\n")
 
-        minutes = s_hours * 60
+        pause = 240
+
+        minutes = (u_hours * 60) + u_minutes
         seconds = minutes * 60
 
-        if tcheck_o >= break_e:
-            iterations = seconds / pause
-        else:
-            if tcheckf >= break_e:
-                iterations = (seconds - lunch) / pause
-            else:
-                iterations = seconds / pause
-                
+        iterations = seconds / pause        
         iterations = math.ceil(iterations)
 
         os.system('cls')
 
         pyautogui.FAILSAFE = True
         
-        print(f"Number of hours: {s_hours}")
-        print(f"Number of iterations: {iterations}")    
+        print(f"Duration of script: {format(u_hours,'02')}:{format(u_minutes,'02')}\nNumber of iterations: {iterations}")    
         print('\nStart\n')
 
         for i in range(1, iterations + 1):
             now = dt.datetime.now()
             timer = now.strftime("%H:%M:%S")
-            
-            if timer >= end:
-                print(f"It is now past 5PM, the script will now end.\t{timer}\n")
-                time.sleep(2)
-                break
 
-            if timer >= break_s and timer <= break_e:
-                print(f"\nGoing on break\t{timer}\n")
-                time.sleep(lunch)
-                print("Resuming...\n")
-                time.sleep(1)
-            else:
-                print(f"Iteration: {i}\t{timer}")
-                print('\tMove')
+            try:            
+                if u_cont == "Y":
+                    if timer >= end:
+                        print(f"It is now past 5PM, the script will now end.\t{timer}\n")
+                        time.sleep(2)
+                        break
+            except UnboundLocalError:
+                pass
 
-                for i in range(0,100):
-                    pyautogui.moveTo(500, i * 5)
-                    
-                print('\tRest\n')
-
-                for i in range(0,3):
-                    pyautogui.press('shift')
-
-                time.sleep(pause)
+            print(f"Iteration: {i}\t{timer}")
+            print('\tMove')
+            pyautogui.moveTo(960,0)
+            pyautogui.moveTo(960,540,duration=8)
+            print('\tRest\n')
+            for j in range(0,3):
+                pyautogui.press('shift')
+            timer_countdown(pause)
 
         print('Done')
-
         input("\nPress 'Enter' to close the script\n")
         print("Closing...")
         time.sleep(1)
