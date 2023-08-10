@@ -31,7 +31,7 @@ def available():
                 u_hours = int(u_hours)
                 break
             except ValueError:
-                print("Invalid input, enter a number.\n")
+                print("Invalid input, enter a number (without a decimal).\n")
                 time.sleep(1)
 
         while True:
