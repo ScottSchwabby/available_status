@@ -28,7 +28,7 @@ def available():
         while True:
             u_hours = input("Enter the number of hours the script will run:\n")
             try:
-                u_hours = float(u_hours)
+                u_hours = int(u_hours)
                 break
             except ValueError:
                 print("Invalid input, enter a number.\n")
