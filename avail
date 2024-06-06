@@ -1,19 +1,10 @@
 from datetime import timedelta as tdelta
 import datetime as dt
-import importlib as implib
-import math
-import subprocess
 import time
+import math
 import os
-
-try:
-    implib.import_module("pyautogui")
-    print("pyautogui is already installed\n")
-except ModuleNotFoundError:
-    subprocess.call('pip install pyautogui')
-    print('\nModule installed\n')
-
 import pyautogui
+
 
 def timer_countdown(duration:int):
     while duration:
@@ -31,7 +22,7 @@ def available():
                 u_hours = int(u_hours)
                 break
             except ValueError:
-                print("Invalid input, enter a number (without a decimal).\n")
+                print("Invalid input. Please enter a number (without a decimal).\n")
                 time.sleep(1)
 
         while True:
@@ -40,7 +31,7 @@ def available():
                 u_minutes = int(u_minutes)
                 break
             except ValueError:
-                print("Invalid input, enter a number (without a decimal).\n")
+                print("Invalid input. Please enter a number (without a decimal).\n")
                 time.sleep(1)
 
         u_hours = math.floor(u_hours)
@@ -52,42 +43,43 @@ def available():
 
         if tcheckf > end:
             while True:
-                u_cont = input(f"\nDo you want the script to end at 5:00 PM (Y/N)?\nIf 'N' the script will continue for the specified duration: ({format(math.floor(u_hours),'02')}:{format(u_minutes,'02')}):\n").upper()
-                if u_cont == 'Y' or u_cont == 'N':
+                u_cont = input(f"\nDo you want the script to end at 5:00 PM, if 'N' the script will continue for the specified duration: ({format(math.floor(u_hours),'02')}:{format(u_minutes,'02')})? (Y/N):\n").upper()
+                if u_cont == "Y" or u_cont == "N":
                     break
                 else:
                     print("Invalid input. Please try again.\n")
 
-        pause = 240
+        pause = 240 
 
         minutes = (u_hours * 60) + u_minutes
         seconds = minutes * 60
 
-        iterations = seconds / pause        
+        iterations = seconds / pause
         iterations = math.ceil(iterations)
 
         os.system('cls')
 
         pyautogui.FAILSAFE = True
-        
-        print(f"Duration of script: {format(u_hours,'02')}:{format(u_minutes,'02')}\nNumber of iterations: {iterations}")    
+
+        print(f"Duration of script: {format(u_hours,'02')}:{format(u_minutes,'02')}\nNumber of iterations: {iterations}")
         print('\nStart\n')
 
         for i in range(1, iterations + 1):
             now = dt.datetime.now()
             timer = now.strftime("%H:%M:%S")
 
-            try:            
+            try:
                 if u_cont == "Y":
                     if timer >= end:
-                        print(f"It is now past 5PM, the script will now end.\t{timer}\n")
+                        print(f"It is past 5 PM, the script will now end.\t{timer}\n")
                         time.sleep(2)
                         break
             except UnboundLocalError:
                 pass
 
-            print(f"Iteration: {i}\t{timer}")
-            print('\tMove')
+            print(f'Iteration: {i}\t{timer}')
+            time.sleep(1)
+            print("\tMove")
             pyautogui.moveTo(960,0)
             pyautogui.moveTo(960,540,duration=8)
             print('\tRest\n')
@@ -95,20 +87,20 @@ def available():
                 pyautogui.press('shift')
             timer_countdown(pause)
 
-        print('Done')
-        input("\nPress 'Enter' to close the script\n")
-        print("Closing...")
+        print('\nDone')
+        input("\nPress 'ENTER' to close script\n")
+        print("Closing...\n")
         time.sleep(1)
 
     except pyautogui.FailSafeException:
-        print("\nScript has been aborted due to FailSafe trigger")
+        print("\nScript has aborted due to FailSafe trigger")
         time.sleep(1)
-        input("\nPress 'Enter' to close the script\n")
-        print("Closing...")
+        input("\nPress 'ENTER' to close script\n")
+        print("Closing...\n")
         time.sleep(1)
 
     except KeyboardInterrupt:
-        print("Closing...")
+        print("Closing...\n")
         time.sleep(1)
 
 available()
